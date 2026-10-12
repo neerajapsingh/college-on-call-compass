@@ -53,6 +53,8 @@ export default {
         navy: {
           DEFAULT: "hsl(var(--navy))",
           light: "hsl(var(--navy-light))",
+          foreground: "hsl(var(--navy-foreground))",
+          muted: "hsl(var(--navy-muted))",
         },
         success: {
           DEFAULT: "hsl(var(--success))",
