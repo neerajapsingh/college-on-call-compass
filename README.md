@@ -1,73 +1,39 @@
-# Welcome to your Lovable project
+# College On Call — Website (React + Vite)
 
-## Project info
+Frontend for the College On Call public website. Backend is a **separate PHP REST API + MySQL** (XAMPP/Apache). This repo contains no backend and never fakes API success.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Setup
+1. `cp .env.example .env` and set `VITE_API_BASE_URL` to the PHP API.
+2. `npm i && npm run dev` (dev) or `npm run build` → serve `dist/` via Apache with SPA fallback to `index.html`.
+Without `VITE_API_BASE_URL`, pages show honest "not connected" error states and forms refuse to claim success.
 
-## How can I edit this code?
+## Response envelope (all endpoints)
+`{ "success": true, "data": ..., "meta": { "page", "per_page", "total", "total_pages" }, "message"?, "errors"?: { field: msg } }`
 
-There are several ways of editing your application.
+## Public endpoints the frontend calls (NOT yet implemented)
+| Method | Path | Notes |
+|---|---|---|
+| GET | /api/universities/ | q, category (comma list), course, mode, location, partner (1/0), exclude_government, featured, institution, page, per_page |
+| GET | /api/universities/{slug} | Institution detail |
+| GET | /api/courses/ | q, category, mode, level, institution, page, per_page |
+| GET | /api/courses/{slug} | Course detail |
+| GET | /api/blog/ , /api/blog/{slug} | category (comma list), exam, page |
+| POST | /api/enquiries/ | Must return `data.id` only after the MySQL insert succeeds |
 
-**Use Lovable**
+## Admin endpoints (planned; CRM UI not yet built)
+/api/auth/login, /logout, /me · /api/admin/leads/ (list, {id}, {id}/status, {id}/notes) · /api/admin/followups/ · /api/admin/reports/ · /api/admin/settings/ · POST/PUT/DELETE on /api/universities/ and /api/courses/.
+Lead pipeline: new, contacted, counselling_done, converted, not_interested.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Server-side requirements
+- PDO prepared statements only; validate every field server-side (same rules as the client: 10-digit Indian mobile, required fields, length caps).
+- Never return regular/campus fees from public endpoints; exclude government institutions when `exclude_government=1`.
+- Sessions: HttpOnly, Secure, SameSite=Lax cookies; regenerate ID on login; password_hash/verify.
+- CSRF token for every admin write (`X-CSRF-Token` header); authorization checked on every admin endpoint.
+- Rate-limit enquiries and login by IP/mobile; reject the hidden `website` honeypot field when filled.
+- Duplicate enquiries (same mobile within a window): return success with `duplicate: true` and the existing id.
+- CORS restricted to the site origin with credentials; generic error messages (no stack traces).
+- Indexes: leads(mobile, created_at, status), institutions(slug UNIQUE, category, is_government), courses(slug UNIQUE, mode, institution_id).
+- Store consent text + timestamp with each enquiry.
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## SEO
+Per-page title/description/canonical via `Seo` component; JSON-LD only from real data. Plan: backend-generated `sitemap.xml`; robots.txt disallows `/admin`.

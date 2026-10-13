@@ -9,7 +9,7 @@ export const institutionPath = (i: Pick<Institution, "type" | "slug">) => `/${i.
 export const MODE_LABEL = { online: "Online", regular: "Regular" } as const;
 export const LEVEL_LABEL: Record<Course["level"], string> = { ug: "Undergraduate", pg: "Postgraduate", diploma: "Diploma", certificate: "Certificate", doctorate: "Doctorate" };
 
-export function InstitutionCard({ inst, compare }: { inst: Institution; compare?: { checked: boolean; disabled: boolean; onToggle: () => void } }) {
+export function InstitutionCard({ inst, compare, showPartnerStatus }: { inst: Institution; showPartnerStatus?: boolean; compare?: { checked: boolean; disabled: boolean; onToggle: () => void } }) {
   return (
     <article className="flex flex-col rounded-xl border bg-card p-5 shadow-card transition-shadow hover:shadow-card-hover">
       <div className="flex items-start gap-3">
@@ -27,6 +27,7 @@ export function InstitutionCard({ inst, compare }: { inst: Institution; compare?
         <Badge variant="secondary" className="capitalize">{inst.type}</Badge>
         {inst.modes.map((m) => <Badge key={m} variant="outline">{MODE_LABEL[m]}</Badge>)}
         {inst.is_partner_verified && <Badge className="gap-1 bg-success text-success-foreground hover:bg-success"><BadgeCheck className="h-3 w-3" aria-hidden />Verified partner</Badge>}
+        {!inst.is_partner_verified && showPartnerStatus && <Badge variant="outline" className="text-muted-foreground">Non-partner</Badge>}
       </div>
       {inst.approvals.length > 0 && <p className="mt-3 text-xs text-muted-foreground">Approvals: {inst.approvals.join(", ")}</p>}
       <div className="mt-auto flex items-center justify-between gap-2 pt-4">

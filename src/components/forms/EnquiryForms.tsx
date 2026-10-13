@@ -120,7 +120,7 @@ export function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const { register, handleSubmit, formState: { errors }, getValues } = useForm<ContactValues>({
     resolver: zodResolver(contactSchema),
-    defaultValues: { full_name: "", mobile: "", email: "", topic: "", message: "", website: "" },
+    defaultValues: { full_name: "", mobile: "", email: "", topic: "Admission Counselling", message: "", website: "" },
   });
   const m = useMutation({ mutationFn: (p: EnquiryPayload) => submitEnquiry(p) });
   const onSubmit = (v: ContactValues) =>
