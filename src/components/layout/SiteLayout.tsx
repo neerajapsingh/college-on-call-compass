@@ -7,13 +7,13 @@ import { SITE, whatsappLink } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const NAV = [
+  { to: "/", label: "Home" },
   { to: "/online-degrees", label: "Online Degrees" },
   { to: "/regular-admissions", label: "Regular Admissions" },
   { to: "/universities", label: "Universities" },
   { to: "/courses", label: "Courses" },
-  { to: "/entrance-exams", label: "Entrance Exams" },
+  { to: "/about", label: "About Us" },
   { to: "/blog", label: "Blog" },
-  { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
 
@@ -42,13 +42,13 @@ function Header() {
           <ul className="flex items-center gap-1">
             {NAV.map((n) => (
               <li key={n.to}>
-                <NavLink to={n.to} className={({ isActive }) => cn("rounded-md px-2.5 py-2 text-sm font-medium transition-colors hover:bg-secondary hover:text-primary", isActive ? "text-primary" : "text-foreground/80")}>{n.label}</NavLink>
+                <NavLink to={n.to} end={n.to === "/"} className={({ isActive }) => cn("rounded-md px-2.5 py-2 text-sm font-medium transition-colors hover:bg-secondary hover:text-primary", isActive ? "text-primary" : "text-foreground/80")}>{n.label}</NavLink>
               </li>
             ))}
           </ul>
         </nav>
         <div className="flex items-center gap-2">
-          <Button asChild size="sm" className="hidden sm:inline-flex"><Link to="/#enquiry">Enquire Now</Link></Button>
+          <Button asChild size="sm" className="hidden sm:inline-flex"><Link to="/#enquiry">Get Free Counselling</Link></Button>
           <button type="button" className="rounded-md p-2 xl:hidden" aria-expanded={open} aria-controls="mobile-nav" aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen((o) => !o)}>
             {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -58,9 +58,9 @@ function Header() {
         <nav id="mobile-nav" aria-label="Mobile" className="border-t bg-background xl:hidden">
           <ul className="container-site grid gap-1 py-3">
             {NAV.map((n) => (
-              <li key={n.to}><NavLink to={n.to} className={({ isActive }) => cn("block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-secondary", isActive && "bg-secondary text-primary")}>{n.label}</NavLink></li>
+              <li key={n.to}><NavLink to={n.to} end={n.to === "/"} className={({ isActive }) => cn("block rounded-md px-3 py-2.5 text-sm font-medium hover:bg-secondary", isActive && "bg-secondary text-primary")}>{n.label}</NavLink></li>
             ))}
-            <li className="pt-2"><Button asChild className="w-full"><Link to="/#enquiry">Enquire Now</Link></Button></li>
+            <li className="pt-2"><Button asChild className="w-full"><Link to="/#enquiry">Get Free Counselling</Link></Button></li>
             <li><a href={SITE.phoneHref} className="flex items-center gap-2 px-3 py-2 text-sm"><Phone className="h-4 w-4" aria-hidden />{SITE.phoneDisplay}</a></li>
           </ul>
         </nav>
@@ -71,7 +71,7 @@ function Header() {
 
 function Footer() {
   const cols = [
-    { title: "Explore", links: NAV.slice(0, 5) },
+    { title: "Explore", links: [...NAV.slice(1, 5), { to: "/entrance-exams", label: "Entrance Exams" }] },
     { title: "Company", links: [{ to: "/about", label: "About" }, { to: "/blog", label: "Blog" }, { to: "/contact", label: "Contact" }] },
     { title: "Legal", links: [{ to: "/privacy-policy", label: "Privacy Policy" }, { to: "/terms-and-conditions", label: "Terms & Conditions" }, { to: "/disclaimer", label: "Disclaimer" }] },
   ];
