@@ -1,7 +1,6 @@
 import { Navigate, NavLink, Outlet, useLocation } from "react-router-dom";
 import { BarChart3, BookOpen, Building2, CalendarClock, LayoutDashboard, LogOut, Settings, Users, Menu } from "lucide-react";
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Logo, Spinner } from "@/components/common";
 import { useAdminAuth } from "@/lib/admin";
