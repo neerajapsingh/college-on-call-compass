@@ -98,6 +98,16 @@ export function EmptyState({ title, text, action }: { title: string; text?: stri
 }
 
 export function ErrorState({ error, onRetry, title = "We couldn't load this information" }: { error: unknown; onRetry?: () => void; title?: string }) {
+  if (!apiConfigured) {
+    return (
+      <div role="status" className="rounded-xl border border-dashed bg-secondary/40 p-8 text-center">
+        <Inbox className="mx-auto h-7 w-7 text-primary" aria-hidden />
+        <p className="mt-2 font-semibold">Listings are being updated</p>
+        <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">Verified information will appear here soon. Meanwhile, our counsellors can help you on {SITE.phoneDisplay} or {SITE.email}.</p>
+        <Button asChild size="sm" className="mt-4"><Link to="/contact">Talk to a counsellor</Link></Button>
+      </div>
+    );
+  }
   return (
     <div role="alert" className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-center">
       <AlertTriangle className="mx-auto h-7 w-7 text-destructive" aria-hidden />

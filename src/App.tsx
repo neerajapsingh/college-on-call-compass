@@ -20,7 +20,7 @@ const InstDetail = L(det, "InstitutionDetailPage"), CourseDetail = L(det, "Cours
 const Blog = L(con, "BlogPage"), Exams = L(con, "EntranceExamsPage"), Exam = L(con, "ExamPage"), ArticleP = L(con, "ArticlePage");
 const About = L(sta, "AboutPage"), Privacy = L(sta, "PrivacyPage"), Terms = L(sta, "TermsPage"), Disclaimer = L(sta, "DisclaimerPage");
 
-const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 60_000 } } });
+const queryClient = new QueryClient({ defaultOptions: { queries: { retry: (n, e) => (e as { status?: number })?.status !== 0 && n < 1, staleTime: 60_000 } } });
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
