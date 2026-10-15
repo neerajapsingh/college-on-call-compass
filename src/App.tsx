@@ -2,7 +2,8 @@ import { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { AdminAuthProvider } from "@/lib/admin";
 import SiteLayout from "@/components/layout/SiteLayout";
 import { Spinner } from "@/components/common";
 
@@ -37,9 +38,9 @@ const App = () => (
     <TooltipProvider>
       <Sonner />
       <BrowserRouter>
-        <AdminAuthGate>
         <Suspense fallback={<Spinner />}>
           <Routes>
+            <Route element={<AdminAuthProvider><Outlet /></AdminAuthProvider>}>
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Navigate to="/admin/dashboard" replace />} />
@@ -52,6 +53,7 @@ const App = () => (
               <Route path="courses" element={<CoursesAdmin />} />
               <Route path="reports" element={<Reports />} />
               <Route path="settings" element={<SettingsP />} />
+            </Route>
             </Route>
             <Route element={<SiteLayout />}>
               <Route path="/" element={<Home />} />
