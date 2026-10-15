@@ -2,7 +2,8 @@ import { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { AdminAuthProvider } from "@/lib/admin";
 import SiteLayout from "@/components/layout/SiteLayout";
 import { Spinner } from "@/components/common";
 
@@ -19,6 +20,16 @@ const Universities = L(dir, "UniversitiesPage"), Online = L(dir, "OnlineDegreesP
 const InstDetail = L(det, "InstitutionDetailPage"), CourseDetail = L(det, "CourseDetailPage");
 const Blog = L(con, "BlogPage"), Exams = L(con, "EntranceExamsPage"), Exam = L(con, "ExamPage"), ArticleP = L(con, "ArticlePage");
 const About = L(sta, "AboutPage"), Privacy = L(sta, "PrivacyPage"), Terms = L(sta, "TermsPage"), Disclaimer = L(sta, "DisclaimerPage");
+const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
+const AdminLogin = lazy(() => import("./pages/admin/Login"));
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const AdminLeads = lazy(() => import("./pages/admin/Leads"));
+const AdminLead = lazy(() => import("./pages/admin/LeadDetail"));
+const AdminFollowups = lazy(() => import("./pages/admin/Followups"));
+const cat = () => import("./pages/admin/Catalogue");
+const rs = () => import("./pages/admin/ReportsSettings");
+const InstAdmin = lazy(() => cat().then((m) => ({ default: m.InstitutionsAdmin })));
+const CoursesAdmin = L(cat, "CoursesAdmin"), Reports = L(rs, "Reports"), SettingsP = L(rs, "Settings");
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: (n, e) => (e as { status?: number })?.status !== 0 && n < 1, staleTime: 60_000 } } });
 
@@ -29,6 +40,21 @@ const App = () => (
       <BrowserRouter>
         <Suspense fallback={<Spinner />}>
           <Routes>
+            <Route element={<AdminAuthProvider><Outlet /></AdminAuthProvider>}>
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="leads" element={<AdminLeads />} />
+              <Route path="leads/:id" element={<AdminLead />} />
+              <Route path="followups" element={<AdminFollowups />} />
+              <Route path="universities" element={<InstAdmin type="university" />} />
+              <Route path="colleges" element={<InstAdmin type="college" />} />
+              <Route path="courses" element={<CoursesAdmin />} />
+              <Route path="reports" element={<Reports />} />
+              <Route path="settings" element={<SettingsP />} />
+            </Route>
+            </Route>
             <Route element={<SiteLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/online-degrees" element={<Online />} />

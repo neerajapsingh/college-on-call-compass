@@ -39,7 +39,6 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-muted/40">
-      <Helmet><meta name="robots" content="noindex,nofollow" /><title>Admin · College On Call</title></Helmet>
       <aside className="hidden lg:flex fixed inset-y-0 left-0 w-60 flex-col border-r bg-card p-4 gap-6">
         <Logo />
         {nav}
