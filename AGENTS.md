@@ -1,0 +1,2 @@
+- Admin CRM lives under src/pages/admin with auth/session state in src/lib/admin.tsx; it calls only the PHP API so the server enforces sessions, CSRF and permissions.
+- PHP/MySQL starter code lives in backend/ (deployed separately to XAMPP), never bundled into the frontend build.
