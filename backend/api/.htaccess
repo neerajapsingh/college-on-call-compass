@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
+<FilesMatch "^(config\.php|lib\.php)$">
+  Require all denied
+</FilesMatch>
